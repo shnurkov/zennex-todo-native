@@ -136,21 +136,17 @@ export default class TaskDesc extends Component{
           <View style={styles.btnWrap}>
             <View style={styles.btnOk}>
             <Button
-            // onPress={onPressLearnMore}
-            
+            onPress={this.handleCloseDesc}
             title="Ok"
             color="#40A9FF"
-            accessibilityLabel="Learn more about this purple button"
           />
 
             </View>
             <View style={styles.btnDel}>
               <Button
-              // onPress={onPressLearnMore}
-              style={styles.btnDel}
+              onPress={this.handleDeleteTask}
               title="Delete"
               color="#C82333"
-              accessibilityLabel="Learn more about this purple button"
             />
             </View>
           </View>
@@ -276,10 +272,10 @@ export default class TaskDesc extends Component{
   //   this.props.edit(this.props.task.id, {time: date});
   // }
 
-  // handleDeleteTask = () => {
-  //   this.props.del(this.props.task.id);
-  // }
-  // handleCloseDesc = () => {
-  //   this.props.close();
-  // }
+  handleDeleteTask = () => {
+    this.props.del(this.props.task.id);
+  }
+  handleCloseDesc = () => {
+    this.props.close();
+  }
 }
