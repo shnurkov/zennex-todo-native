@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import { StyleSheet, FlatList, View, Text, TextInput, KeyboardAvoidingView, TouchableHighlight } from 'react-native';
+import { StyleSheet, FlatList, View, Text, TextInput, KeyboardAvoidingView, TouchableHighlight, AsyncStorage } from 'react-native';
 import { Icon } from 'react-native-elements';
 import Task from "../components/task";
 import TaskDesc from "../components/task-description";
+import Filter from "../components/filter";
 // import tasks from "../tasks.json";
 
 const styles = StyleSheet.create({
@@ -17,7 +18,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   taskList: {
-    flex: 5,
+    flex: 6,
     backgroundColor: 'white',
     padding: 15,
     borderTopLeftRadius: 5,
@@ -66,7 +67,7 @@ export default class TaskList extends Component{
     return (
       <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
         <View style={styles.filter}>
-          <Text>Filter</Text>
+          <Filter filter = {this.filterTasks} filterBy = {this.state.filterBy}/>
         </View>
         <View style={styles.taskList}>
           <View style={styles.taskListMain}>
@@ -92,8 +93,25 @@ export default class TaskList extends Component{
       </KeyboardAvoidingView>
     );
   }
-  componentDidMount(){
-    // this.setState({tasks});
+  async componentDidMount(){
+    let savedTasks = await this.getTasks();
+    let uniqueId = 0;
+    if(savedTasks){
+      savedTasks = JSON.parse(savedTasks);
+      savedTasks.forEach((task) => {
+        if(task.id > uniqueId) uniqueId = task.id;
+        if(task.time.end){
+          task.time.end = new Date(task.time.end);
+          task.timer = this.setTimerOverdue(task, task.id)();
+        }
+      });
+      this.setState({tasks: savedTasks, uniqueId});
+    }
+  }
+  componentDidUpdate = () => {
+    if(JSON.stringify(this.state.tasks) !== this.getTasks()){
+      this.saveTasks();
+    }
   }
   handleChange = (val) => {
     this.setState({newTaskTitle: val});
@@ -153,9 +171,9 @@ export default class TaskList extends Component{
     (editElem.description || editElem.description === "") && (task.description = editElem.description);
     editElem.importance && (task.importance = editElem.importance);
     (editElem.time ||  editElem.time === null) && (task.time.end = editElem.time);
-    // if(editElem.time){
-    //   task.timer = this.setTimerOverdue(task, id)();
-    // }
+    if(editElem.time){
+      task.timer = this.setTimerOverdue(task, id)();
+    }
     let newTasksState = this.state.tasks.slice();
     newTasksState.splice(index, 1, task);
 
@@ -187,9 +205,23 @@ export default class TaskList extends Component{
     this.setState({tasks});
 
   }
-  saveTasks = () => {
-    // localStorage.setItem('tasks', JSON.stringify(this.state.tasks));
+  saveTasks = async () => {
+    try {
+      await AsyncStorage.setItem('tasks', JSON.stringify(this.state.tasks));
+    }catch (e){
+      console.log(e);
+    }
   }
+  getTasks = async () => {
+    try {
+      const value = await AsyncStorage.getItem('tasks');
+      if (value !== null) {
+        return value;
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
   filterTasks = (filterBy) => {
     this.setState({filterBy});
   }

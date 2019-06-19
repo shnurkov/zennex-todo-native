@@ -52,7 +52,6 @@ export default class TaskDesc extends Component{
 
   render(){
     let {task} = this.props;
-    console.log("desc: ", task);
     return (
       <Modal
           animationType="slide"
@@ -129,18 +128,16 @@ export default class TaskDesc extends Component{
                   borderRadius: 5
                 }
               }}
-              // onDateChange={(date) => {this.setState({date: date})}}
             />
 
           </View>}
           <View style={styles.btnWrap}>
             <View style={styles.btnOk}>
-            <Button
-            onPress={this.handleCloseDesc}
-            title="Ok"
-            color="#40A9FF"
-          />
-
+              <Button
+              onPress={this.handleCloseDesc}
+              title="Ok"
+              color="#40A9FF"
+              />
             </View>
             <View style={styles.btnDel}>
               <Button
@@ -150,7 +147,6 @@ export default class TaskDesc extends Component{
             />
             </View>
           </View>
-        
         </View>
       }
       </Modal>
@@ -190,88 +186,15 @@ export default class TaskDesc extends Component{
     }
     return i;
   }
-
-  // componentDidUpdate(prevProps){
-  //   if(this.props.task && prevProps.task && this.props.task.id !== prevProps.task.id){
-  //     if(this.props.task.time.end){
-  //       this.setState({
-  //         date: this.props.task.time.end
-  //       })
-  //     }else{
-  //       this.setState({date: ""});
-  //     }
-  //   }
-  // }
-
-
-
-  // disabledStartDate = startValue => {
-  //   let now = new Date();
-  //   now.setHours(0, 0, 0);
-  //   return startValue.valueOf() < now;
-  // }
-
-  // disableHours = () => {
-  //   if(!this.state.isToday) return;
-  //   let hours = [];
-  //   for(let i =0; i < moment().hour(); i++){
-  //       hours.push(i);
-  //   }
-  //   return hours;
-  // }
-
-  // disableMinutes = (selectedHour) => {
-  //   let minutes= [];
-  //   if (selectedHour === moment().hour()){
-  //       for(let i =0; i < moment().minute()+1; i++){
-  //           minutes.push(i);
-  //       }
-  //   }
-  //   return minutes;
-  // }
-
   handleTitleChange = (val) => {
     this.props.edit(this.props.task.id, {title: val});
   }
-
   handleDescChange = (val) => {
     this.props.edit(this.props.task.id, {description: val});
   }
-
-  // handleImportanceChange = (e) => {
-  //   let val = e.target.value;
-  //   this.props.edit(this.props.task.id, {importance: val});
-  // }
-
   handleDateChange = (_date, dateStr) => {
-    // let dateStr = null;
-    // if(date){
-    //   dateStr = date._d;
-    // }else{
-    //   this.setState({date: dateStr});
-    //   this.props.edit(this.props.task.id, {time: dateStr});
-    //   return;
-    // }
     this.props.edit(this.props.task.id, {time: dateStr});
   }
-
-  // handleTimeChange = (_time, timeString) => {
-  //   let t = timeString.split(":");
-  //   let h = +t[0], m = +t[1];
-
-  //   let date = this.state.date;
-  //   let now = new Date();
-
-  //   if(this.state.isToday && h === now.getHours() && m === 0){
-  //     m = now.getMinutes() + 1;
-  //   }
-
-  //   date.setHours(h, m);
-  //   this.setState({date});
-
-  //   this.props.edit(this.props.task.id, {time: date});
-  // }
-
   handleDeleteTask = () => {
     this.props.del(this.props.task.id);
   }

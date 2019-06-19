@@ -56,6 +56,21 @@ const styles = StyleSheet.create({
     },
     title: {
         marginLeft: 10
+    },
+    importance: {
+        marginLeft: 8
+    },
+    importanceLabel: {
+        width: 10,
+        height: 2,
+        backgroundColor: "gray",
+        marginBottom: 1
+    },
+    importanceLabelDone: {
+        width: 10,
+        height: 2,
+        backgroundColor: "#eee",
+        marginBottom: 1
     }
 });
 
@@ -74,6 +89,11 @@ export default class Task extends Component{
             <View style={taskClassName}>
                 <View style={styles.titleWrap}>
                     <CheckBox value = {task.isDone} onChange = {this.handleDoneBtn}/>
+                    <View style={styles.importance}>
+                        <View style={task.isDone ? styles.importanceLabelDone :styles.importanceLabel} />
+                        {(task.importance === "important" || task.importance === "very-important") &&<View style={task.isDone ? styles.importanceLabelDone :styles.importanceLabel} />}
+                        {(task.importance === "very-important") &&<View style={task.isDone ? styles.importanceLabelDone :styles.importanceLabel} />}
+                    </View>
                     <Text style={task.isDone ? [styles.title, styles.doneTask] : styles.title}>{task.title}</Text>
                 </View>
                 <TouchableHighlight style={styles.delete} activeOpacity={1} underlayColor="#eee" onPress = {this.handleDeleteBtn}>
