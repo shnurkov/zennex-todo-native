@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
         shadowOpacity: 1.0
     },
-    title: {
+    titleWrap: {
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
@@ -36,18 +36,45 @@ const styles = StyleSheet.create({
         display: "flex",
         justifyContent: "center",
         alignItems: "center"
+    },
+    activeTask: {
+        borderWidth: 1.5,
+        borderColor: "#40A9FF"
+    },
+    doneTask: {
+        textDecorationLine: "line-through",
+        color: "#eee"
+    },
+    overdueTask: {
+        backgroundColor: "#f3e0e0",
+        borderWidth: 0,
+    },
+    overdueActiveTask: {
+        borderWidth: 1.5,
+        borderColor: "#eabcbc",
+        backgroundColor: "#f3e0e0"
+    },
+    title: {
+        marginLeft: 10
     }
 });
 
 export default class Task extends Component{
     render() {
-        const {task} = this.props;
+        const {task, activeTaskId} = this.props;
+        let taskClassName = [styles.container];
+        // if(task.isDone) taskClassName.push(styles.doneTask);
+        if(activeTaskId === task.id) taskClassName.push(styles.activeTask);
+
+        if(task.isOverdue && activeTaskId === task.id) taskClassName.push(styles.overdueActiveTask);
+        else if(task.isOverdue) taskClassName.push(styles.overdueTask);
+
         return (
             <TouchableHighlight  activeOpacity={1} underlayColor="#fff" onPress = {this.handleActiveBtn}>
-            <View style={styles.container}>
-                <View style={styles.title}>
+            <View style={taskClassName}>
+                <View style={styles.titleWrap}>
                     <CheckBox value = {task.isDone} onChange = {this.handleDoneBtn}/>
-                    <Text style={{marginLeft: 10}}>{task.title}</Text>
+                    <Text style={task.isDone ? [styles.title, styles.doneTask] : styles.title}>{task.title}</Text>
                 </View>
                 <TouchableHighlight style={styles.delete} activeOpacity={1} underlayColor="#eee" onPress = {this.handleDeleteBtn}>
                     <View>

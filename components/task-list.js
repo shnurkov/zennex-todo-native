@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import { StyleSheet, FlatList, View, Text, TextInput, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, FlatList, View, Text, TextInput, KeyboardAvoidingView, TouchableHighlight } from 'react-native';
 import { Icon } from 'react-native-elements';
 import Task from "../components/task";
-import tasks from "../tasks.json";
+import TaskDesc from "../components/task-description";
+// import tasks from "../tasks.json";
 
 const styles = StyleSheet.create({
   container: {
@@ -71,29 +72,56 @@ export default class TaskList extends Component{
           <View style={styles.taskListMain}>
             <FlatList
               data={taskElements}
-              renderItem={({item}) => <Task task = {item} del = {this.deleteTask} setDone = {this.setTaskDone} isDone = {item.isDone} setActive = {this.setActiveTask} isActive = {this.state.activeTaskId} />}
+              renderItem={({item}) => <Task task = {item} del = {this.deleteTask} setDone = {this.setTaskDone} isDone = {item.isDone} setActive = {this.setActiveTask} activeTaskId = {this.state.activeTaskId} />}
             />
           </View>
         </View>
         <View style={styles.addFieldWrap}>
-          <TextInput style={styles.taskAddField} placeholder="Type a task" onChangeText={this.handleChange}/>
-          <View style={styles.addFieldBtn}>
-            <Icon
-              name='send'
-              type='material'
-              color='#eee'
-            />
-          </View>
-
+          <TextInput style={styles.taskAddField} value = {this.state.newTaskTitle} placeholder="Type a task" onChangeText={this.handleChange} onSubmitEditing = {this.handleAddTaskBtn}/>
+          <TouchableHighlight style={styles.addFieldBtn}  activeOpacity={1} underlayColor="#fff" onPress = {this.handleAddTaskBtn}>
+            <View >
+              <Icon
+                name='send'
+                type='material'
+                color='#eee'
+              />
+            </View>
+          </TouchableHighlight>
         </View>
+        <TaskDesc task = {this.getActiveTask()} edit = {this.editTask}  del = {this.deleteTask} close = {this.closeDesc}/>
       </KeyboardAvoidingView>
     );
   }
   componentDidMount(){
-    this.setState({tasks});
+    // this.setState({tasks});
   }
   handleChange = (val) => {
     this.setState({newTaskTitle: val});
+  }
+  handleAddTaskBtn = () => {
+    if(this.state.newTaskTitle){
+      this.setState({newTaskTitle: ""});
+      this.addNewTask();
+    }
+  }
+  addNewTask = () => {
+    let tasks = this.state.tasks;
+    let uniqueId = this.state.uniqueId;
+    uniqueId++;
+    tasks.push({
+      id: uniqueId,
+      title: this.state.newTaskTitle,
+      description: null,
+      importance: "usual",
+      time: {
+        end: null,
+        done: null
+      },
+      isOverdue: false,
+      isDone: false,
+      timer: null
+    });
+    this.setState({tasks, uniqueId, filterBy: "all"});
   }
   deleteTask = (id) => {
     let tasks = this.state.tasks;
@@ -114,6 +142,61 @@ export default class TaskList extends Component{
   setActiveTask = (id) => {
     this.setState({activeTaskId: id});
   }
+  getActiveTask = () => {
+    return this.state.activeTaskId && this.getTaskById(this.state.activeTaskId).task;
+  }
+  editTask = (id, editElem) => {
+    let item = this.getTaskById(id);
+    let task = item.task, index = item.index;
+
+    (editElem.title || editElem.title === "") && (task.title = editElem.title);
+    (editElem.description || editElem.description === "") && (task.description = editElem.description);
+    editElem.importance && (task.importance = editElem.importance);
+    (editElem.time ||  editElem.time === null) && (task.time.end = editElem.time);
+    // if(editElem.time){
+    //   task.timer = this.setTimerOverdue(task, id)();
+    // }
+    let newTasksState = this.state.tasks.slice();
+    newTasksState.splice(index, 1, task);
+
+    this.setState({tasks: newTasksState});
+  }
+  setTimerOverdue = (task, id) => {
+    return () => {
+      task.isOverdue = false;
+      let timeToCheck = task.time.end.getTime() - (new Date()).getTime();
+      console.log(task.title, Math.ceil(timeToCheck/1000));
+      if(task.timer) clearTimeout(task.timer);
+      return setTimeout(() => {
+        this.checkOverdue(id);
+      }, timeToCheck)
+    }
+  }
+  checkOverdue = (id) => {
+    let item = this.getTaskById(id);
+    let task = item.task, index = item.index;
+    if(!task.time.end) return;
+    let tasks = this.state.tasks.slice();
+
+    if(((new Date()).getTime() > task.time.end.getTime()) && !task.isDone) {
+      task.isOverdue = true;
+    }else if(task.isDone){
+      task.isOverdue = false;
+    }
+    tasks.splice(index, 1, task);
+    this.setState({tasks});
+
+  }
+  saveTasks = () => {
+    // localStorage.setItem('tasks', JSON.stringify(this.state.tasks));
+  }
+  filterTasks = (filterBy) => {
+    this.setState({filterBy});
+  }
+  closeDesc = () => {
+    this.setState({activeTaskId: null});
+  }
+
   getTaskById = (id) => {
     let tasks = this.state.tasks;
     for (let i = 0; i < tasks.length; i++){
