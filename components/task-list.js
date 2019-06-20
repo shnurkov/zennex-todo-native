@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { StyleSheet, FlatList, View, Text, TextInput, KeyboardAvoidingView, TouchableHighlight, AsyncStorage } from 'react-native';
+import { StyleSheet, FlatList, View, TextInput, KeyboardAvoidingView, TouchableHighlight, AsyncStorage } from 'react-native';
 import { Icon } from 'react-native-elements';
 import Task from "../components/task";
 import TaskDesc from "../components/task-description";
@@ -30,9 +30,6 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomLeftRadius: 5,
     borderBottomRightRadius: 5
-  },
-  taskListMain: {
-    // padding: 15
   },
   taskAddField: {
     backgroundColor: "#fff",
@@ -147,7 +144,7 @@ export default class TaskList extends Component{
   deleteTask = (id) => {
     let tasks = this.state.tasks;
     let delIndex = this.getTaskById(id).index;
-    // clearTimeout(tasks[delIndex].timer);
+    clearTimeout(tasks[delIndex].timer);
     tasks.splice(delIndex, 1);
     this.setState({tasks, activeTaskId: null});
   }
@@ -158,7 +155,7 @@ export default class TaskList extends Component{
     tasks[doneIndex].isDone = !tasks[doneIndex].isDone;
     tasks[doneIndex].time.done = new Date();
     this.setState({tasks});
-    // this.checkOverdue(id);
+    this.checkOverdue(id);
   }
   setActiveTask = (id) => {
     this.setState({activeTaskId: id});
@@ -186,7 +183,7 @@ export default class TaskList extends Component{
     return () => {
       task.isOverdue = false;
       let timeToCheck = task.time.end.getTime() - (new Date()).getTime();
-      console.log(task.title, Math.ceil(timeToCheck/1000));
+      // console.log(task.title, Math.ceil(timeToCheck/1000));
       if(task.timer) clearTimeout(task.timer);
       return setTimeout(() => {
         this.checkOverdue(id);
@@ -243,5 +240,4 @@ export default class TaskList extends Component{
       }
     }
   }
-
 }

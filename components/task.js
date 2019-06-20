@@ -78,13 +78,10 @@ export default class Task extends Component{
     render() {
         const {task, activeTaskId} = this.props;
         let taskClassName = [styles.container];
-        // if(task.isDone) taskClassName.push(styles.doneTask);
         if(activeTaskId === task.id) taskClassName.push(styles.activeTask);
 
         if(task.isOverdue && activeTaskId === task.id) taskClassName.push(styles.overdueActiveTask);
         else if(task.isOverdue) taskClassName.push(styles.overdueTask);
-        console.log("length: ", task.title.length);
-        console.log("cut: ", task.title.slice(0, 20) + "...");
         return (
             <TouchableHighlight  activeOpacity={1} underlayColor="#fff" onPress = {this.handleActiveBtn}>
             <View style={taskClassName}>

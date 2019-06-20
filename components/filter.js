@@ -2,10 +2,6 @@ import React, {Component} from 'react';
 import { StyleSheet, View, Text} from 'react-native';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 const styles = StyleSheet.create({
-  container: {
-    // display: "flex",
-    // justifyContent: "flex-end"
-  },
   label: {
     marginBottom: 10
   }
