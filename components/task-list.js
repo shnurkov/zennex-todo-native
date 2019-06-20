@@ -104,6 +104,9 @@ export default class TaskList extends Component{
           task.time.end = new Date(task.time.end);
           task.timer = this.setTimerOverdue(task, task.id)();
         }
+        if(task.time.done){
+          task.time.done = new Date(task.time.done);
+        }
       });
       this.setState({tasks: savedTasks, uniqueId});
     }

@@ -83,18 +83,19 @@ export default class Task extends Component{
 
         if(task.isOverdue && activeTaskId === task.id) taskClassName.push(styles.overdueActiveTask);
         else if(task.isOverdue) taskClassName.push(styles.overdueTask);
-
+        console.log("length: ", task.title.length);
+        console.log("cut: ", task.title.slice(0, 20) + "...");
         return (
             <TouchableHighlight  activeOpacity={1} underlayColor="#fff" onPress = {this.handleActiveBtn}>
             <View style={taskClassName}>
                 <View style={styles.titleWrap}>
-                    <CheckBox value = {task.isDone} onChange = {this.handleDoneBtn}/>
+                    <CheckBox containerStyle={{backgroundColor: 'blue'}} value = {task.isDone} onChange = {this.handleDoneBtn}/>
                     <View style={styles.importance}>
                         <View style={task.isDone ? styles.importanceLabelDone :styles.importanceLabel} />
                         {(task.importance === "important" || task.importance === "very-important") &&<View style={task.isDone ? styles.importanceLabelDone :styles.importanceLabel} />}
                         {(task.importance === "very-important") &&<View style={task.isDone ? styles.importanceLabelDone :styles.importanceLabel} />}
                     </View>
-                    <Text style={task.isDone ? [styles.title, styles.doneTask] : styles.title}>{task.title}</Text>
+                    <Text style={task.isDone ? [styles.title, styles.doneTask] : styles.title}>{task.title.length > 25 ? task.title.slice(0, 22) + "...": task.title}</Text>
                 </View>
                 <TouchableHighlight style={styles.delete} activeOpacity={1} underlayColor="#eee" onPress = {this.handleDeleteBtn}>
                     <View>
