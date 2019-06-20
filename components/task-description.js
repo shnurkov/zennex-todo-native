@@ -1,9 +1,7 @@
 import React, {Component} from 'react';
-import { ScrollView, TextInput, StyleSheet, View, Text, CheckBox, TouchableHighlight, Modal, Button, Dimensions } from 'react-native';
-import { Icon } from 'react-native-elements';
+import {TextInput, StyleSheet, View, Text, Modal, Button, Dimensions } from 'react-native';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import DatePicker from 'react-native-datepicker';
-// import { TextInput } from 'react-native-gesture-handler';
 const styles = StyleSheet.create({
   container: {
     padding: 15,

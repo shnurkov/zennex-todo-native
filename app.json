@@ -26,6 +26,9 @@
     "ios": {
       "supportsTablet": true
     },
+    "android": {
+      "package": "com.zennex.todo"
+    },
     "description": "",
     "githubUrl": "https://github.com/shnurkov/zennex-todo-native"
   }

@@ -4,7 +4,6 @@ import { Icon } from 'react-native-elements';
 import Task from "../components/task";
 import TaskDesc from "../components/task-description";
 import Filter from "../components/filter";
-// import tasks from "../tasks.json";
 
 const styles = StyleSheet.create({
   container: {
@@ -35,6 +34,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: 5,
     paddingLeft: 10,
+    paddingRight: 40,
     borderRadius: 5,
     position: "relative"
   },

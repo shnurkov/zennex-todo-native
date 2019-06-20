@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, YellowBox } from 'react-native';
+import { StyleSheet, View, YellowBox } from 'react-native';
 import _ from 'lodash';
 import TaskList from "./components/task-list";
 export default function App() {
